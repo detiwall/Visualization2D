@@ -1,0 +1,257 @@
+<html>
+<link type="text/css" rel="stylesheet" id="dark-mode-custom-link">
+<link type="text/css" rel="stylesheet" id="dark-mode-general-link">
+<style lang="en" type="text/css" id="dark-mode-custom-style"></style>
+<style lang="en" type="text/css" id="dark-mode-native-style"></style>
+<head>
+    <title>Mapa da UA</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <link href="https://js.arcgis.com/4.14/esri/css/main.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/dojo/nls/dojo_pt-pt.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/MapView.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/widgets/Home.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/layers/MapImageLayer.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/nls/MapView_pt-pt.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/widgets/Home/HomeViewModel.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/widgets/Home/nls/Home.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/widgets/Home/nls/pt-pt/Home.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/webgl.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/mapViewDeps.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/engine.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/engine/webgl/definitions.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/layers/MapImageLayerView2D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/layers/BitmapLayerView2D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/layers/LayerView2D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/layers/support/ExportStrategy.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/layers/support/popupUtils2D.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/layers/MapImageLayerView.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/layers/support/ClipArea.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/layers/support/ClipRect.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/layers/support/Geometry.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/layers/support/Path.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/views/2d/viewStateUtils.js"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.arcgis.com/4.14/esri/renderers/support/clickToleranceUtils.js"></script>
+    <script type="text/javascript" src="https://js.arcgis.com/4.14/"></script>
+    <style>
+    html,
+    body,
+    #viewDiv {padding: 0;margin: 0;height: 98%;width: 100%;}
+    </style>
+    <script type="text/javascript">
+
+    var locs =
+    [
+    {
+    "Id" : 1,
+    "long": -8.659532,
+    "lat": 40.632902 ,
+    "Temp": 6
+    },
+    {
+    "Id" : 2,
+    "long": -8.659132,
+    "lat": 40.632502 ,
+    "Temp": 10
+    },
+    {
+    "Id" : 3,
+    "long": -8.659232,
+    "lat": 40.632802 ,
+    "Temp": 10
+    }
+    ]
+
+    require([
+    "esri/Map",
+    "esri/views/MapView",
+    "esri/widgets/Home",
+    "esri/layers/MapImageLayer",
+    "esri/geometry/Extent",
+    "esri/Graphic",
+    "esri/layers/GraphicsLayer",
+    "dojo/domReady!"
+    ], function(Map, MapView, Home, MapImageLayer, Extent, Graphic, GraphicsLayer) {
+            var uri = "https://sgt-websig.ua.pt/server/rest/services/Piso_2/MapServer";
+            var res = encodeURI(uri); 
+
+            var layer = new MapImageLayer({ url: res });
+            var map = new Map({basemap: "dark-gray-vector", layers: [layer] });
+            var view = new MapView({
+              container: "viewDiv",
+              zoom: 16,
+              center: [-8.659132, 40.632902], //Longitude, latitude
+              map: map
+            });
+
+            addBTN();
+
+            
+
+            function changeLayer(view, newLayer) {
+              
+                if (newLayer == "Piso 1"){
+
+                  layer = new MapImageLayer({ url: "https://sgt-websig.ua.pt/server/rest/services/Piso_1/MapServer" });
+                  map = new Map({basemap: "dark-gray-vector", layers: [layer] });
+
+                  view = new MapView({
+                      container: "viewDiv",
+                      map: map,
+                      zoom: 16,
+                      center: [-8.659132, 40.632902]
+                  });
+                 
+              }
+              else if (newLayer == "Piso 2"){
+                layer = new MapImageLayer({ url: "https://sgt-websig.ua.pt/server/rest/services/Piso_2/MapServer" });
+                map = new Map({basemap: "dark-gray-vector", layers: [layer] });
+
+                  view = new MapView({
+                      container: "viewDiv",
+                      map: map,
+                      zoom: 16,
+                      center: [-8.659132, 40.632902]
+                  });
+              }
+              else if (newLayer == "Piso 3"){
+                layer = new MapImageLayer({ url: "https://sgt-websig.ua.pt/server/rest/services/Piso_3/MapServer" });
+                map = new Map({basemap: "dark-gray-vector", layers: [layer] });
+
+                  view = new MapView({
+                      container: "viewDiv",
+                      map: map,
+                      zoom: 16,
+                      center: [-8.659132, 40.632902]
+                  });
+              }
+              else if (newLayer == "Edifícios"){
+                layer = new MapImageLayer({ url: "https://sgt-websig.ua.pt/server/rest/services/Edifícios_UA/MapServer" });
+                map = new Map({basemap: "dark-gray-vector", layers: [layer] });
+
+                  view = new MapView({
+                      container: "viewDiv",
+                      map: map,
+                      zoom: 16,
+                      center: [-8.659132, 40.632902]
+                  });
+                
+                  for (i = 0; i < locs.length; i++) {
+           
+
+                    const graphicsLayer = new GraphicsLayer();
+                    map.add(graphicsLayer);
+                    var colorTest;
+
+                    if (locs[i].Temp==6) {
+                        colorTest = "red"
+                    }
+                    else{
+                        colorTest = "blue"
+                    }
+
+                    const point = { //Create a point
+                        type: "point",
+                        longitude: locs[i].long,
+                        latitude: locs[i].lat
+                    };
+                    const simpleMarkerSymbol = {
+                        type: "simple-marker",
+                        color: colorTest,  // Orange
+                        size: locs[i].Temp/1.5,
+                        outline: {
+                            color: [255, 255, 255], // White
+                            width: 0.4
+                        }
+                    };
+
+                    const pointGraphic = new Graphic({
+                        geometry: point,
+                        symbol: simpleMarkerSymbol
+                    });
+                    graphicsLayer.add(pointGraphic);
+
+
+                }
+                
+              }
+             changeList = ["Escolha um Piso", "Piso 1",  "Piso 2", "Piso 3", "Piso 4", "Piso 5", "Edifícios"];
+              newLayer = changeList[0];
+          
+            // Add SQL UI
+            const select = document.createElement("select","");
+            select.setAttribute("class", "esri-widget esri-select");
+            select.setAttribute("style", "width: 200px; font-family: 'Avenir Next'; font-size: 1em");
+            changeList.forEach(function(query){
+                let option = document.createElement("option");
+                option.innerHTML = query;
+                option.value = query;
+                select.appendChild(option);
+            });
+
+            view.ui.add(select, "top-right");
+
+            // Listen for changes
+            select.addEventListener('change', (event) => {
+                newLayer = event.target.value;
+
+                console.log(newLayer);
+
+                changeLayer(view, newLayer);
+
+            });
+            
+            }
+      
+        function addBTN() {
+          
+          
+            // SQL query array
+            const changeList = ["Escolha um Piso", "Piso 1",  "Piso 2", "Piso 3", "Piso 4", "Piso 5", "Edifícios"];
+            let newLayer = changeList[0];
+          
+            // Add SQL UI
+            const select = document.createElement("select","");
+            select.setAttribute("class", "esri-widget esri-select");
+            select.setAttribute("style", "width: 200px; font-family: 'Avenir Next'; font-size: 1em");
+            changeList.forEach(function(query){
+                let option = document.createElement("option");
+                option.innerHTML = query;
+                option.value = query;
+                select.appendChild(option);
+            });
+
+            view.ui.add(select, "top-right");
+
+            // Listen for changes
+            select.addEventListener('change', (event) => {
+                newLayer = event.target.value;
+
+                console.log(newLayer);
+
+                changeLayer(view, newLayer);
+
+            });
+        }
+
+        });
+    </script>
+    </head>
+    <body>
+    <div id="viewDiv" class="esri-view esri-view-width-xlarge esri-view-width-greater-than-xsmall esri-view-width-greater-than-small esri-view-width-greater-than-medium esri-view-width-greater-than-large esri-view-height-medium esri-view-height-greater-than-xsmall esri-view-height-greater-than-small esri-view-height-less-than-large esri-view-height-less-than-xlarge esri-view-orientation-landscape">
+        <div class="esri-view-root">
+            <div class="esri-view-surface esri-view-surface--inset-outline esri-view-surface--touch-none" role="application" tabindex="0">
+                <canvas style="width: 1365px; height: 882px; display: block;" width="1365" height="882"></canvas>
+            </div>
+            <div class="esri-overlay-surface">
+                <div style="visibility: hidden;">
+                </div>
+            </div>
+            
+        </div>
+        <div class="esri-view-user-storage">
+        </div>
+    </div>
+    </body>
+</html>
+
